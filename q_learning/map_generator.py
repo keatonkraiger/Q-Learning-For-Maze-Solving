@@ -28,8 +28,8 @@ else:
     +--+--+--+
     '''
 
-
-# Note that I transpose the map as this is how the maze generation code expects it
+# Note that the code expects it a certain way so we pre-process it here.
+maze_data = np.swapaxes(maze_data, 0, 1)
 maze_data = maze_data.T
 
 save_map_name = 'maze2d_regular_3x3.npy'
