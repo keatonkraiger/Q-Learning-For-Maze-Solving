@@ -13,6 +13,7 @@ class CFG:
         self.MIN_EXPLORE_RATE = self.config.getfloat('parameters', 'MIN_EXPLORE_RATE')
         self.NUM_EPISODES = self.config.getint('parameters', 'NUM_EPISODES')
         self.STREAK_TO_END = self.config.getint('parameters', 'STREAK_TO_END')
+        self.AVG_N = self.config.getint('parameters', 'AVG_N')
         self.ENV_NAME = self.config.get('env', 'ENV_NAME')
         self.DEBUG_MODE = self.config.getboolean('env', 'DEBUG_MODE')
         self.RENDER_MAZE = self.config.getboolean('env', 'RENDER_MAZE')

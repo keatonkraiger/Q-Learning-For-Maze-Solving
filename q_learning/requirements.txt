@@ -1,7 +1,7 @@
 torch
 numpy
 tqdm
-pygame==2.1.0
+pygame
 gym==0.23.0
 numpy
 matplotlib

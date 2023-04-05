@@ -1,12 +1,45 @@
 import os
 import sys
 import numpy as np
+import matplotlib.pyplot as plt
 import math
 import random
 
 import gym
 from maze.util import *
 
+import numpy as np
+import matplotlib.pyplot as plt
+
+def plot_moving_average_with_std(data, window_size, alpha=0.3, data_name='Reward', file_save=None):
+    """
+    Plots the moving average of the data with a standard deviation shaded area.
+    
+    Args:  
+        data: 1D numpy array of data points
+        window_size: integer size of the moving average window
+        alpha: transparency of the shaded area
+        data_name: name of the data to be used in the plot legend
+        file_save: path to save the plot to. If None, the plot is not saved.
+    """
+    moving_average = np.convolve(data, np.ones(window_size), mode='valid') / window_size
+    moving_std = np.array([np.std(data[i:i+window_size]) for i in range(len(data) - window_size + 1)])
+
+    # Define the upper and lower bounds for the shaded area
+    upper_bound = moving_average + moving_std
+    lower_bound = moving_average - moving_std
+
+    x_values = np.arange(window_size - 1, len(data))
+    plt.plot(x_values, moving_average, label='Moving Average', color='blue')
+    plt.fill_between(x_values, lower_bound, upper_bound, color='blue', alpha=alpha, label='Moving Std Deviation')
+    plt.title(f'{data_name} Moving Average')
+    plt.xlabel('Episode')
+    plt.ylabel(data_name)
+    if file_save is not None:
+        plt.savefig(file_save)
+    else:
+        plt.show()
+    plt.close()
 
 
 def simulate(env):
@@ -20,6 +53,9 @@ def simulate(env):
     # Render tha maze
     env.render()
 
+    ep_rewards = []
+    ep_steps = []
+
     for episode in range(NUM_EPISODES):
 
         # Reset the environment
@@ -30,7 +66,6 @@ def simulate(env):
         total_reward = 0
 
         for t in range(MAX_T):
-
             # Select an action
             action = select_action(state_0, explore_rate)
 
@@ -99,8 +134,19 @@ def simulate(env):
         # Update parameters
         explore_rate = get_explore_rate(episode)
         learning_rate = get_learning_rate(episode)
+        ep_rewards.append(total_reward)
+        ep_steps.append(t)
 
     print('Game over!')
+
+    # Plot the reward and steps
+    ep_rewards = np.array(ep_rewards)
+    file_name = f'q_learning_{ENV_NAME}_rewards.png'
+    plot_moving_average_with_std(ep_rewards, window_size=AVG_N, data_name='Reward', file_save=file_name)
+
+    ep_steps = np.array(ep_steps)
+    file_name = f'q_learning_{ENV_NAME}_steps.png'
+    plot_moving_average_with_std(ep_steps, window_size=AVG_N, data_name='Steps', file_save=file_name)
     env.close()
 
 
@@ -177,6 +223,12 @@ if __name__ == "__main__":
     DEBUG_MODE = cfg.DEBUG_MODE
     RENDER_MAZE = cfg.RENDER_MAZE
     ENABLE_RECORDING = cfg.ENABLE_RECORDING
+
+    '''
+    Define plotting related constants
+    '''
+    ENV_NAME = cfg.ENV_NAME
+    AVG_N = cfg.AVG_N
 
     '''
     Creating a Q-Table for each state-action pair
