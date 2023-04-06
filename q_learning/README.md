@@ -1,5 +1,8 @@
 # Classical Q Learning for Maze Environment
 
+Spring 2023
+TAs: Keaton Kraiger & Shimian Zhang
+
 ``` bash
   /\ ___ /\
  (  o   o  ) Wecome to PRML Project 4, Classical Q Learning!
