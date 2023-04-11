@@ -29,6 +29,10 @@ else:
     '''
 
 # Note that the code expects it a certain way so we pre-process it here.
+
+# New note, the below code wouldn't actually change the map orientation.
+# I accidentally left it in from previous versions of the file. I'm leaving
+# it here however to avoid confusion. 
 maze_data = np.swapaxes(maze_data, 0, 1)
 maze_data = maze_data.T
 
